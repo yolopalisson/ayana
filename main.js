@@ -55,6 +55,36 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  // Animated counters in the stat strip
+  var statCounters = document.querySelectorAll('.stat .num');
+  if (statCounters.length) {
+    var counterObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        var target = Number(el.dataset.target || 0);
+        var suffix = el.dataset.suffix || '';
+        var duration = 1400;
+        var startTime = null;
+        var formatValue = function (value) {
+          return Math.round(value).toString();
+        };
+        var tick = function (timestamp) {
+          if (!startTime) startTime = timestamp;
+          var progress = Math.min((timestamp - startTime) / duration, 1);
+          var eased = 1 - Math.pow(1 - progress, 3);
+          el.textContent = formatValue(target * eased) + suffix;
+          if (progress < 1) requestAnimationFrame(tick);
+          else el.textContent = formatValue(target) + suffix;
+        };
+        requestAnimationFrame(tick);
+        counterObserver.unobserve(el);
+      });
+    }, { threshold: 0.4 });
+
+    statCounters.forEach(function (el) { counterObserver.observe(el); });
+  }
+
   // Scroll reveal
   var revealEls = document.querySelectorAll('.reveal');
   if ('IntersectionObserver' in window && revealEls.length) {
