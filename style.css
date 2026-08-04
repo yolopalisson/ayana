@@ -250,8 +250,8 @@ button{ font-family:inherit; cursor:pointer; }
   position:relative;
   border-radius:6px;
   overflow:hidden;
-  box-shadow:var(--shadow);
-  aspect-ratio:4/3.1;
+  /* box-shadow:var(--shadow); */
+  /* aspect-ratio:4/3.1; */
 }
 .hero-media .ph{ width:100%; height:100%; }
 .hero-media::after{
@@ -394,8 +394,8 @@ button{ font-family:inherit; cursor:pointer; }
 .split-media{
   border-radius:6px;
   overflow:hidden;
-  box-shadow:var(--shadow);
-  aspect-ratio:5/4;
+  /* box-shadow:var(--shadow); */
+  /* aspect-ratio:5/4; */
 }
 
 /* ---------- Placeholder art (used in place of client photography) ---------- */
@@ -708,8 +708,8 @@ button{ font-family:inherit; cursor:pointer; }
 .subhero-media{
   border-radius:6px;
   overflow:hidden;
-  box-shadow:var(--shadow);
-  aspect-ratio:4/3.3;
+  /* box-shadow:var(--shadow); */
+  /* aspect-ratio:4/3.3; */
 }
 
 /* ---------- Brand strip (logos) ---------- */
