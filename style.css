@@ -204,7 +204,8 @@ button{ font-family:inherit; cursor:pointer; }
   position:relative;
   transition:transform .25s ease, opacity .25s ease, top .25s ease, background .25s ease;
 }
-.nav-toggle span::before{ position:absolute; top:-7px; }
+.nav-toggle span::before{ positi
+   on:absolute; top:-7px; }
 .nav-toggle span::after{ position:absolute; top:7px; }
 /* Hamburger -> X when the mobile menu is open */
 .nav-toggle.is-open span{ background:transparent; }
@@ -471,8 +472,8 @@ button{ font-family:inherit; cursor:pointer; }
   overflow:hidden;
   transition:transform .3s ease, box-shadow .3s ease;
 }
-.educator-card:hover{ transform:translateY(-5px); box-shadow:var(--shadow); height:100%; }
-.educator-photo{ height: 100px; width:100%; object-fit: cover; object-position: center; }
+.educator-card:hover{ transform:translateY(-5px); box-shadow:var(--shadow); }
+.educator-photo{ aspect-ratio: 3/4; position: relative; object-fit: cover; object-position: center; }
 .educator-body{ padding:18px 18px 20px; }
 .educator-body h4{ font-size:16px; color:var(--navy); }
 .educator-role{
