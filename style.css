@@ -471,8 +471,8 @@ button{ font-family:inherit; cursor:pointer; }
   overflow:hidden;
   transition:transform .3s ease, box-shadow .3s ease;
 }
-.educator-card:hover{ transform:translateY(-5px); box-shadow:var(--shadow); }
-.educator-photo{ aspect-ratio:1/1; height: auto; width:100%; position:relative; object-fit: cover; }
+.educator-card:hover{ transform:translateY(-5px); box-shadow:var(--shadow); height:100%; }
+.educator-photo{ height: 100px; width:100%; object-fit: cover; object-position: center; }
 .educator-body{ padding:18px 18px 20px; }
 .educator-body h4{ font-size:16px; color:var(--navy); }
 .educator-role{
