@@ -1,118 +1,117 @@
-document.addEventListener('DOMContentLoaded', function () {
-  // Mobile nav toggle
-  var toggle = document.querySelector('.nav-toggle');
-  var nav = document.querySelector('.main-nav');
-  var headerCta = document.querySelector('.header-cta .btn');
+/* AYANA — site interactions */
+(function () {
+  'use strict';
+
+  const header  = document.querySelector('.site-header');
+  const backTop = document.querySelector('.back-to-top');
+  const nav     = document.querySelector('.main-nav');
+  const toggle  = document.querySelector('.nav-toggle');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const mqMobile = window.matchMedia('(max-width: 900px)');
+
+  /* ---------- Sticky header + back-to-top visibility ---------- */
+  function onScroll() {
+    const y = window.scrollY || window.pageYOffset;
+    if (header)  header.classList.toggle('is-scrolled', y > 12);
+    if (backTop) backTop.classList.toggle('is-visible', y > 500);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  if (backTop) {
+    backTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    });
+  }
+
+  /* ---------- Dropdowns ---------- */
+  function closeAllDrops() {
+    document.querySelectorAll('.has-drop').forEach((item) => {
+      item.classList.remove('is-open');
+      const btn = item.querySelector(':scope > .nav-link');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  function closeDrawer() {
+    if (!nav || !toggle) return;
+    toggle.setAttribute('aria-expanded', 'false');
+    nav.classList.remove('is-open');
+    document.body.style.overflow = '';
+    closeAllDrops();
+  }
+
+  document.querySelectorAll('.has-drop > .nav-link').forEach((trigger) => {
+    trigger.addEventListener('click', (e) => {
+      if (!mqMobile.matches) return; // desktop uses hover
+      e.preventDefault();
+      const parent = trigger.parentElement;
+      const wasOpen = parent.classList.contains('is-open');
+      closeAllDrops();
+      if (!wasOpen) {
+        parent.classList.add('is-open');
+        trigger.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+
+  document.querySelectorAll('.nav-drop a').forEach((link) => {
+    link.addEventListener('click', () => {
+      const parent = link.closest('.has-drop');
+      if (parent) {
+        parent.classList.remove('is-open');
+        const btn = parent.querySelector(':scope > .nav-link');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+        if (!mqMobile.matches) {
+          parent.classList.add('drop-suppressed');
+          parent.addEventListener('mouseleave', () => {
+            parent.classList.remove('drop-suppressed');
+          }, { once: true });
+        }
+      }
+      closeDrawer();
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.has-drop')) closeAllDrops();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    closeAllDrops();
+    if (nav && nav.classList.contains('is-open')) closeDrawer();
+  });
 
   if (toggle && nav) {
-    toggle.setAttribute('aria-expanded', 'false');
-    toggle.setAttribute('aria-controls', 'main-nav');
-    nav.id = 'main-nav';
-
-    // Backdrop, inserted once so it doesn't need to live in every HTML file
-    var backdrop = document.createElement('div');
-    backdrop.className = 'nav-backdrop';
-    document.body.appendChild(backdrop);
-
-    // Clone the header's primary CTA into the mobile panel so it's not lost
-    // when .header-cta .btn is hidden at the 900px breakpoint (see style.css)
-    if (headerCta) {
-      var mobileCta = headerCta.cloneNode(true);
-      mobileCta.classList.add('header-cta-mobile');
-      nav.appendChild(mobileCta);
-    }
-
-    var openNav = function () {
-      nav.classList.add('open');
-      toggle.classList.add('is-open');
-      backdrop.classList.add('open');
-      toggle.setAttribute('aria-expanded', 'true');
-      document.body.classList.add('nav-locked');
-    };
-    var closeNav = function () {
-      nav.classList.remove('open');
-      toggle.classList.remove('is-open');
-      backdrop.classList.remove('open');
-      toggle.setAttribute('aria-expanded', 'false');
-      document.body.classList.remove('nav-locked');
-    };
-
-    toggle.addEventListener('click', function () {
-      if (nav.classList.contains('open')) closeNav(); else openNav();
-    });
-    backdrop.addEventListener('click', closeNav);
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') closeNav();
-    });
-    nav.querySelectorAll('a').forEach(function (a) {
-      a.addEventListener('click', closeNav);
-    });
-    // Close the mobile panel automatically if the viewport is resized
-    // back up to desktop width while it's open (must match the 900px
-    // nav breakpoint in style.css)
-    window.addEventListener('resize', function () {
-      if (window.innerWidth > 900) closeNav();
+    toggle.addEventListener('click', () => {
+      const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+      if (isOpen) closeDrawer();
+      else {
+        toggle.setAttribute('aria-expanded', 'true');
+        nav.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+      }
     });
   }
 
-  // Animated counters in the stat strip
-  var statCounters = document.querySelectorAll('.stat .num');
-  if (statCounters.length) {
-    var counterObserver = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        var el = entry.target;
-        var target = Number(el.dataset.target || 0);
-        var suffix = el.dataset.suffix || '';
-        var duration = 1400;
-        var startTime = null;
-        var formatValue = function (value) {
-          return Math.round(value).toString();
-        };
-        var tick = function (timestamp) {
-          if (!startTime) startTime = timestamp;
-          var progress = Math.min((timestamp - startTime) / duration, 1);
-          var eased = 1 - Math.pow(1 - progress, 3);
-          el.textContent = formatValue(target * eased) + suffix;
-          if (progress < 1) requestAnimationFrame(tick);
-          else el.textContent = formatValue(target) + suffix;
-        };
-        requestAnimationFrame(tick);
-        counterObserver.unobserve(el);
-      });
-    }, { threshold: 0.4 });
+  /* ---------- Scroll reveal ---------- */
+  const reveals = document.querySelectorAll('.reveal');
+  if (!reveals.length) return;
 
-    statCounters.forEach(function (el) { counterObserver.observe(el); });
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    reveals.forEach((el) => el.classList.add('is-visible'));
+    return;
   }
 
-  // Scroll reveal
-  var revealEls = document.querySelectorAll('.reveal');
-  if ('IntersectionObserver' in window && revealEls.length) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12 });
-    revealEls.forEach(function (el) { io.observe(el); });
-  } else {
-    revealEls.forEach(function (el) { el.classList.add('is-visible'); });
-  }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
 
-  // Header shadow on scroll
-  var header = document.querySelector('.site-header');
-  if (header) {
-    var onScroll = function () {
-      if (window.scrollY > 8) header.style.boxShadow = '0 8px 24px -18px rgba(15,46,78,.45)';
-      else header.style.boxShadow = 'none';
-    };
-    document.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-  }
-
-  // Footer year
-  var yearEl = document.getElementById('year');
-  if (yearEl) yearEl.textContent = new Date().getFullYear();
-});
+  reveals.forEach((el) => observer.observe(el));
+})();

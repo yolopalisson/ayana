@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country Flag Finder</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    text-align: center;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+}
+
+h1 {
+    color: #333;
+}
+
+#countryInput {
+    padding: 10px;
+    margin-top: 10px;
+    width: 80%;
+    font-size: 16px;
+}
+
+button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+#flagDisplay {
+    margin-top: 20px;
+}
+
+img {
+    width: 150px;
+    height: auto;
+}
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Country Flag Finder</h1>
+        <input type="text" id="countryInput" placeholder="Enter country name" />
+        <button id="getFlagBtn">Get Flag</button>
+        <div id="flagDisplay">
+            <!-- The flag image will be displayed here -->
+        </div>
+    </div>
+
+    <div class="carousel-container">
+        <!-- Slides -->
+        <div class="carousel-track" id="track">
+            <div class="carousel-slide">
+                <div class="flag">🇯🇵</div>
+                <div class="country-name">Japan</div>
+            </div>
+            <div class="carousel-slide">
+                <div class="flag">🇧🇷</div>
+                <div class="country-name">Brazil</div>
+            </div>
+            <div class="carousel-slide">
+                <div class="flag">🇨🇦</div>
+                <div class="country-name">Canada</div>
+            </div>
+            <div class="carousel-slide">
+                <div class="flag">🇿🇦</div>
+                <div class="country-name">South Africa</div>
+            </div>
+            <div class="carousel-slide">
+                <div class="flag">🇫🇷</div>
+                <div class="country-name">France</div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <button class="carousel-btn btn-prev" id="prevBtn">&#10094;</button>
+        <button class="carousel-btn btn-next" id="nextBtn">&#10095;</button>
+    </div>
+
+    <script>
+        document.getElementById('getFlagBtn').addEventListener('click', function() {
+    const countryName = document.getElementById('countryInput').value.trim();
+
+    if (countryName === "") {
+        alert("Please enter a country name.");
+        return;
+    }
+
+    // Normalize the country name (convert to lowercase and replace spaces with dashes)
+    const formattedCountryName = countryName.toLowerCase().replace(/\s+/g, '-');
+
+    // Fetch flag image from the Flag CDN API
+    const flagUrl = `https://flagcdn.com/w320/${formattedCountryName}.png`;
+
+    // Check if the image exists (simple check by testing the image URL)
+    const flagImage = new Image();
+    flagImage.onload = function() {
+        document.getElementById('flagDisplay').innerHTML = `<img src="${flagUrl}" alt="Flag of ${countryName}" />`;
+    };
+    flagImage.onerror = function() {
+        alert("Flag not found. Please check the country name.");
+        document.getElementById('flagDisplay').innerHTML = ''; // Clear any previous flag
+    };
+
+    // Start loading the image
+    flagImage.src = flagUrl;
+});
+    </script>
+
+</body>
+</html>
