@@ -630,6 +630,7 @@ section[id],div[id]{scroll-margin-top:110px}
     background: #fff;
     border: 1px solid rgba(15, 46, 78, 0.09);
     border-radius: 28px;
+    corner-shape: squircle;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -793,6 +794,7 @@ section[id],div[id]{scroll-margin-top:110px}
 
     .pathway-card {
         border-radius: 22px;
+        corner-shape: squircle;
     }
 
     .pathway-body {
