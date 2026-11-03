@@ -888,6 +888,7 @@ section[id],div[id]{scroll-margin-top:110px}
             margin-top: auto;
             padding: 17px 24px;
             border-radius: 14px;
+            corner-shape: squircle;
             background: var(--navy);
             color: var(--warm-white);
             font-size: 16px;
