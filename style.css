@@ -1118,3 +1118,157 @@ section[id],div[id]{scroll-margin-top:110px}
 .spotlight-toggle[aria-expanded="true"]::after {
   transform: rotate(225deg) translateY(-0.1em);
 }
+
+
+/* =========================================================================
+   FORM VALIDATION — WCAG COMPLIANT
+   ========================================================================= */
+
+/* Required marker */
+.req {
+  color: #B3261E;
+  font-weight: 700;
+}
+
+.form-required-note {
+  margin: 0 0 1.25rem;
+  font-size: 0.85rem;
+  color: var(--muted, #5b5b5b);
+}
+
+/* Field-level error text */
+.form-field-error {
+  display: none;
+  margin: 0.4rem 0 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: #B3261E;
+  font-weight: 500;
+}
+
+.form-field-error.is-visible {
+  display: block;
+}
+
+/* Error state on the control */
+.form-field.has-error label {
+  color: #B3261E;
+}
+
+.form-field.has-error input,
+.form-field.has-error select,
+.form-field.has-error textarea {
+  border-color: #B3261E;
+  box-shadow: 0 0 0 1px #B3261E;
+}
+
+.form-field.has-error input:focus,
+.form-field.has-error select:focus,
+.form-field.has-error textarea:focus {
+  outline: 3px solid #B3261E;
+  outline-offset: 1px;
+}
+
+/* Error summary */
+.form-error-summary {
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid #B3261E;
+  border-left: 5px solid #B3261E;
+  border-radius: 6px;
+  background: #FDECEA;
+  color: #7A1C16;
+}
+
+.form-error-summary:focus {
+  outline: 3px solid #B3261E;
+  outline-offset: 2px;
+}
+
+.form-error-summary p {
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.form-error-summary ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.form-error-summary li {
+  margin-bottom: 0.3rem;
+  font-size: 0.9rem;
+}
+
+.form-error-summary a {
+  color: #7A1C16;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Submission (server) error */
+.form-error {
+  display: none;
+  margin-top: 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid #B3261E;
+  border-left: 5px solid #B3261E;
+  border-radius: 6px;
+  background: #FDECEA;
+  color: #7A1C16;
+  font-size: 0.9rem;
+}
+
+.form-error.is-visible {
+  display: block;
+}
+
+/* =========================================================================
+   THANK YOU PAGE
+   ========================================================================= */
+
+.success-wrap {
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 1rem 0 2rem;
+}
+
+.success-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 1.5rem;
+  border-radius: 50%;
+  background: var(--emerald, #1F4E45);
+  color: #fff;
+}
+
+.success-icon svg {
+  width: 34px;
+  height: 34px;
+}
+
+.success-wrap h1 {
+  margin-bottom: 1rem;
+}
+
+.success-wrap .lead {
+  margin-bottom: 2rem;
+}
+
+.success-next {
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  font-size: 0.95rem;
+  color: var(--muted, #5b5b5b);
+}
+
+.success-next a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
