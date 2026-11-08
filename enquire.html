@@ -88,16 +88,49 @@
           method="POST"
           novalidate
         >
+          <!-- Used only if JavaScript fails: Formspree redirects here natively -->
+          <input type="hidden" name="_next" value="https://ayana-rho.vercel.app/thank-you.html">
+          <input type="hidden" name="_subject" value="New Ayana website enquiry">
+
+          <!-- Error summary: announced to screen readers, focused on failure -->
+          <div class="form-error-summary" id="form-error-summary" role="alert" tabindex="-1" hidden>
+            <p>There is a problem with your enquiry</p>
+            <ul id="form-error-list"></ul>
+          </div>
+
+          <p class="form-required-note">Fields marked <span class="req" aria-hidden="true">*</span> are required.</p>
+
           <div class="form-grid">
 
             <div class="form-field form-field--full">
-              <label for="full-name">Full name</label>
-              <input id="full-name" name="full-name" type="text" placeholder="Your name" autocomplete="name" required>
+              <label for="full-name">Full name <span class="req" aria-hidden="true">*</span></label>
+              <input
+                id="full-name"
+                name="full-name"
+                type="text"
+                placeholder="Your name"
+                autocomplete="name"
+                required
+                aria-describedby="full-name-error"
+                data-error-required="Enter your full name."
+              >
+              <p class="form-field-error" id="full-name-error"></p>
             </div>
 
             <div class="form-field form-field--full">
-              <label for="email">Email address</label>
-              <input id="email" name="email" type="email" placeholder="you@email.com" autocomplete="email" required>
+              <label for="email">Email address <span class="req" aria-hidden="true">*</span></label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="you@email.com"
+                autocomplete="email"
+                required
+                aria-describedby="email-error"
+                data-error-required="Enter your email address."
+                data-error-type="Enter a valid email address, for example name@example.com."
+              >
+              <p class="form-field-error" id="email-error"></p>
             </div>
 
             <div class="form-field form-field--full">
@@ -133,9 +166,8 @@
             </div>
 
             <div class="form-field form-field--full">
-              <button class="btn btn-gold btn-lg" type="submit" data-fs-submit-btn>Send Message</button>
-              <div class="form-success" role="status" data-fs-success>Thank you — we'll be in touch shortly.</div>
-              <div class="form-error" role="alert" data-fs-error></div>
+              <button class="btn btn-gold btn-lg" type="submit">Send Message</button>
+              <div class="form-error" id="form-error" role="alert"></div>
             </div>
 
           </div>
@@ -214,19 +246,158 @@
 
 <script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
 
-<!-- Formspree AJAX library (enhancement — native form submission is the fallback) -->
-<script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    if (typeof FormspreeAjax === 'undefined') {
-      console.warn('Formspree AJAX not loaded — form will submit natively.');
-      return;
+(function () {
+  'use strict';
+
+  var form = document.getElementById('enquiry-form');
+  if (!form) return;
+
+  var summary     = document.getElementById('form-error-summary');
+  var summaryList = document.getElementById('form-error-list');
+  var formError   = document.getElementById('form-error');
+  var submitBtn   = form.querySelector('button[type="submit"]');
+
+  var fields = [
+    { el: document.getElementById('full-name'), label: 'Full name' },
+    { el: document.getElementById('email'),     label: 'Email address' }
+  ];
+
+  /* ---------- Helpers ---------- */
+
+  function errorElFor(field) {
+    var id = field.getAttribute('aria-describedby');
+    return id ? document.getElementById(id) : null;
+  }
+
+  function validateField(field) {
+    // Optional and empty: no error
+    if (!field.required && field.value.trim() === '') return '';
+
+    if (field.validity.valueMissing) {
+      return field.dataset.errorRequired || 'This field is required.';
     }
-    FormspreeAjax.initForm({
-      formElement: '#enquiry-form',
-      formId: 'xdeegjjk'
+    if (field.validity.typeMismatch) {
+      return field.dataset.errorType || 'Enter a valid value.';
+    }
+    return '';
+  }
+
+  function showFieldError(field, message) {
+    var wrap = field.closest('.form-field');
+    var err  = errorElFor(field);
+    if (wrap) wrap.classList.add('has-error');
+    field.setAttribute('aria-invalid', 'true');
+    if (err) {
+      err.textContent = message;
+      err.classList.add('is-visible');
+    }
+  }
+
+  function clearFieldError(field) {
+    var wrap = field.closest('.form-field');
+    var err  = errorElFor(field);
+    if (wrap) wrap.classList.remove('has-error');
+    field.removeAttribute('aria-invalid');
+    if (err) {
+      err.textContent = '';
+      err.classList.remove('is-visible');
+    }
+  }
+
+  function buildSummary(errors) {
+    summaryList.innerHTML = '';
+    errors.forEach(function (item) {
+      var li = document.createElement('li');
+      var link = document.createElement('a');
+      link.href = '#' + item.el.id;
+      link.textContent = item.label + ': ' + item.message;
+      link.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        item.el.focus();
+      });
+      li.appendChild(link);
+      summaryList.appendChild(li);
+    });
+  }
+
+  function showFormError(message) {
+    formError.textContent = message;
+    formError.classList.add('is-visible');
+  }
+
+  function clearFormError() {
+    formError.textContent = '';
+    formError.classList.remove('is-visible');
+  }
+
+  /* ---------- Live re-validation ---------- */
+
+  fields.forEach(function (item) {
+    if (!item.el) return;
+    item.el.addEventListener('input', function () {
+      if (item.el.getAttribute('aria-invalid') === 'true' && !validateField(item.el)) {
+        clearFieldError(item.el);
+      }
     });
   });
+
+  /* ---------- Submit ---------- */
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    clearFormError();
+
+    var errors = [];
+
+    fields.forEach(function (item) {
+      if (!item.el) return;
+      clearFieldError(item.el);
+      var message = validateField(item.el);
+      if (message) {
+        showFieldError(item.el, message);
+        errors.push({ el: item.el, label: item.label, message: message });
+      }
+    });
+
+    if (errors.length) {
+      buildSummary(errors);
+      summary.hidden = false;
+      summary.focus();
+      return;
+    }
+
+    summary.hidden = true;
+
+    submitBtn.disabled = true;
+    var originalLabel = submitBtn.textContent;
+    submitBtn.textContent = 'Sending…';
+
+    fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    })
+    .then(function (response) {
+      if (response.ok) {
+        window.location.href = 'thank-you.html';
+        return null;
+      }
+      return response.json().catch(function () { return {}; }).then(function (data) {
+        var message = 'Sorry, your enquiry could not be sent. Please try again.';
+        if (data && data.errors && data.errors.length) {
+          message = data.errors.map(function (e) { return e.message; }).join(' ');
+        }
+        throw new Error(message);
+      });
+    })
+    .catch(function (error) {
+      showFormError(error.message || 'Sorry, your enquiry could not be sent. Please check your connection and try again.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalLabel;
+    });
+  });
+})();
 </script>
 
 <script src="main.js"></script>
