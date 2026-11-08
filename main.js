@@ -115,3 +115,43 @@
 
   reveals.forEach((el) => observer.observe(el));
 })();
+
+/* =========================================================================
+   SPOTLIGHT BIO — EXPAND / COLLAPSE
+   ========================================================================= */
+(function () {
+  'use strict';
+
+  function initSpotlightToggles() {
+    var buttons = document.querySelectorAll('.spotlight-toggle');
+
+    Array.prototype.forEach.call(buttons, function (btn) {
+      btn.addEventListener('click', function () {
+        var panelId = btn.getAttribute('aria-controls');
+        var panel = panelId
+          ? document.getElementById(panelId)
+          : btn.closest('.spotlight-body').querySelector('.spotlight-extended');
+
+        if (!panel) return;
+
+        var isOpen = btn.getAttribute('aria-expanded') === 'true';
+
+        if (isOpen) {
+          panel.hidden = true;
+          btn.setAttribute('aria-expanded', 'false');
+          btn.textContent = 'Read more';
+        } else {
+          panel.hidden = false;
+          btn.setAttribute('aria-expanded', 'true');
+          btn.textContent = 'Read less';
+        }
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSpotlightToggles);
+  } else {
+    initSpotlightToggles();
+  }
+})();
