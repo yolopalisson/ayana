@@ -27,7 +27,8 @@
       </span>
     </a>
     <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="primary-nav">
-      <span></span><span></span><span></span>
+      
+<span></span><span></span><span></span>
     </button>
     <nav class="main-nav" id="primary-nav" aria-label="Primary">
       <ul class="nav-list">
@@ -80,8 +81,7 @@
 
       <div class="enquire-grid">
 
-        <form class="form-card reveal" action="#" method="post" novalidate
-              onsubmit="event.preventDefault(); this.querySelector('.form-success').classList.add('is-shown'); this.reset();">
+        <form class="form-card reveal" id="enquiry-form" novalidate>
           <div class="form-grid">
 
             <div class="form-field form-field--full">
@@ -127,8 +127,9 @@
             </div>
 
             <div class="form-field form-field--full">
-              <button class="btn btn-gold btn-lg" type="submit">Send Message</button>
-              <p class="form-success" role="status">Thank you — we'll be in touch shortly.</p>
+              <button class="btn btn-gold btn-lg" type="submit" data-fs-submit-btn>Send Message</button>
+              <p class="form-success" role="status" data-fs-success>Thank you — we'll be in touch shortly.</p>
+              <div data-fs-error></div>
             </div>
 
           </div>
@@ -206,6 +207,18 @@
 </button>
 
 <script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+
+<!-- Formspree AJAX library -->
+<script src="https://unpkg.com/@formspree/ajax@1/dist/formspree.ajax.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    FormspreeAjax.initForm({
+      formElement: '#enquiry-form',
+      formId: 'xdeegjjk'
+    });
+  });
+</script>
+
 <script src="main.js"></script>
 </body>
 </html>
