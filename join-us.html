@@ -28,7 +28,8 @@
       </span>
     </a>
     <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="primary-nav">
-      <span></span><span></span><span></span>
+      
+<span></span><span></span><span></span>
     </button>
     <nav class="main-nav" id="primary-nav" aria-label="Primary">
       <ul class="nav-list">
@@ -83,20 +84,68 @@
 
   <section class="section section--tight">
     <div class="container" style="max-width:720px;">
-      <form class="form-card reveal" action="#" method="post" novalidate>
+      <form
+        class="form-card reveal"
+        id="join-form"
+        action="https://formspree.io/f/mqppqjjp"
+        method="POST"
+        novalidate
+      >
+        <!-- Used only if JavaScript fails: Formspree redirects here natively -->
+        <input type="hidden" name="_next" value="https://ayana-rho.vercel.app/thank-you-join.html">
+        <input type="hidden" name="_subject" value="New Ayana teaching application">
+
+        <!-- Error summary: announced to screen readers, focused on failure -->
+        <div class="form-error-summary" id="join-error-summary" role="alert" tabindex="-1" hidden>
+          <p>There is a problem with your application</p>
+          <ul id="join-error-list"></ul>
+        </div>
+
+        <p class="form-required-note">Fields marked <span class="req" aria-hidden="true">*</span> are required.</p>
+
         <div class="form-grid">
           <div class="form-field">
-            <label for="name">Name</label>
-            <input id="name" name="name" type="text" autocomplete="name" required>
+            <label for="name">Name <span class="req" aria-hidden="true">*</span></label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              autocomplete="name"
+              required
+              aria-describedby="name-error"
+              data-error-required="Enter your name."
+            >
+            <p class="form-field-error" id="name-error"></p>
           </div>
+
           <div class="form-field">
-            <label for="email">Email</label>
-            <input id="email" name="email" type="email" autocomplete="email" required>
+            <label for="email">Email <span class="req" aria-hidden="true">*</span></label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              required
+              aria-describedby="email-error"
+              data-error-required="Enter your email address."
+              data-error-type="Enter a valid email address, for example name@example.com."
+            >
+            <p class="form-field-error" id="email-error"></p>
           </div>
+
           <div class="form-field form-field--full">
-            <label for="subjects">Subjects you teach</label>
-            <input id="subjects" name="subjects" type="text" required>
+            <label for="subjects">Subjects you teach <span class="req" aria-hidden="true">*</span></label>
+            <input
+              id="subjects"
+              name="subjects"
+              type="text"
+              required
+              aria-describedby="subjects-error"
+              data-error-required="Tell us which subjects you teach."
+            >
+            <p class="form-field-error" id="subjects-error"></p>
           </div>
+
           <div class="form-field form-field--full">
             <label for="experience">Years of teaching experience</label>
             <select id="experience" name="experience">
@@ -106,6 +155,7 @@
               <option>10+ years</option>
             </select>
           </div>
+
           <div class="form-field form-field--full">
             <label for="education">Your education level</label>
             <select id="education" name="education">
@@ -116,14 +166,17 @@
               <option>PhD</option>
             </select>
           </div>
+
           <!-- <div class="form-field form-field--full">
             <label for="message">Tell us about yourself</label>
             <textarea id="message" name="message"></textarea>
           </div> -->
+
           <div class="form-field form-field--full form-submit--center">
             <center>
-            <button class="btn btn-gold btn-lg" type="submit">Send</button>
+              <button class="btn btn-gold btn-lg" type="submit">Send</button>
             </center>
+            <div class="form-error" id="join-error" role="alert"></div>
           </div>
         </div>
       </form>
@@ -184,6 +237,161 @@
 </button>
 
 <script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+
+<script>
+(function () {
+  'use strict';
+
+  var form = document.getElementById('join-form');
+  if (!form) return;
+
+  var summary     = document.getElementById('join-error-summary');
+  var summaryList = document.getElementById('join-error-list');
+  var formError   = document.getElementById('join-error');
+  var submitBtn   = form.querySelector('button[type="submit"]');
+
+  var fields = [
+    { el: document.getElementById('name'),     label: 'Name' },
+    { el: document.getElementById('email'),    label: 'Email' },
+    { el: document.getElementById('subjects'), label: 'Subjects you teach' }
+  ];
+
+  /* ---------- Helpers ---------- */
+
+  function errorElFor(field) {
+    var id = field.getAttribute('aria-describedby');
+    return id ? document.getElementById(id) : null;
+  }
+
+  function validateField(field) {
+    if (!field.required && field.value.trim() === '') return '';
+
+    if (field.validity.valueMissing) {
+      return field.dataset.errorRequired || 'This field is required.';
+    }
+    if (field.validity.typeMismatch) {
+      return field.dataset.errorType || 'Enter a valid value.';
+    }
+    return '';
+  }
+
+  function showFieldError(field, message) {
+    var wrap = field.closest('.form-field');
+    var err  = errorElFor(field);
+    if (wrap) wrap.classList.add('has-error');
+    field.setAttribute('aria-invalid', 'true');
+    if (err) {
+      err.textContent = message;
+      err.classList.add('is-visible');
+    }
+  }
+
+  function clearFieldError(field) {
+    var wrap = field.closest('.form-field');
+    var err  = errorElFor(field);
+    if (wrap) wrap.classList.remove('has-error');
+    field.removeAttribute('aria-invalid');
+    if (err) {
+      err.textContent = '';
+      err.classList.remove('is-visible');
+    }
+  }
+
+  function buildSummary(errors) {
+    summaryList.innerHTML = '';
+    errors.forEach(function (item) {
+      var li = document.createElement('li');
+      var link = document.createElement('a');
+      link.href = '#' + item.el.id;
+      link.textContent = item.label + ': ' + item.message;
+      link.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        item.el.focus();
+      });
+      li.appendChild(link);
+      summaryList.appendChild(li);
+    });
+  }
+
+  function showFormError(message) {
+    formError.textContent = message;
+    formError.classList.add('is-visible');
+  }
+
+  function clearFormError() {
+    formError.textContent = '';
+    formError.classList.remove('is-visible');
+  }
+
+  /* ---------- Live re-validation ---------- */
+
+  fields.forEach(function (item) {
+    if (!item.el) return;
+    item.el.addEventListener('input', function () {
+      if (item.el.getAttribute('aria-invalid') === 'true' && !validateField(item.el)) {
+        clearFieldError(item.el);
+      }
+    });
+  });
+
+  /* ---------- Submit ---------- */
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    clearFormError();
+
+    var errors = [];
+
+    fields.forEach(function (item) {
+      if (!item.el) return;
+      clearFieldError(item.el);
+      var message = validateField(item.el);
+      if (message) {
+        showFieldError(item.el, message);
+        errors.push({ el: item.el, label: item.label, message: message });
+      }
+    });
+
+    if (errors.length) {
+      buildSummary(errors);
+      summary.hidden = false;
+      summary.focus();
+      return;
+    }
+
+    summary.hidden = true;
+
+    submitBtn.disabled = true;
+    var originalLabel = submitBtn.textContent;
+    submitBtn.textContent = 'Sending…';
+
+    fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    })
+    .then(function (response) {
+      if (response.ok) {
+        window.location.href = 'thank-you-join.html';
+        return null;
+      }
+      return response.json().catch(function () { return {}; }).then(function (data) {
+        var message = 'Sorry, your application could not be sent. Please try again.';
+        if (data && data.errors && data.errors.length) {
+          message = data.errors.map(function (e) { return e.message; }).join(' ');
+        }
+        throw new Error(message);
+      });
+    })
+    .catch(function (error) {
+      showFormError(error.message || 'Sorry, your application could not be sent. Please check your connection and try again.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalLabel;
+    });
+  });
+})();
+</script>
+
 <script src="main.js"></script>
 </body>
 </html>
