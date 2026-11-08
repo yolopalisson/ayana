@@ -81,7 +81,13 @@
 
       <div class="enquire-grid">
 
-        <form class="form-card reveal" id="enquiry-form" novalidate>
+        <form
+          class="form-card reveal"
+          id="enquiry-form"
+          action="https://formspree.io/f/xdeegjjk"
+          method="POST"
+          novalidate
+        >
           <div class="form-grid">
 
             <div class="form-field form-field--full">
@@ -128,8 +134,8 @@
 
             <div class="form-field form-field--full">
               <button class="btn btn-gold btn-lg" type="submit" data-fs-submit-btn>Send Message</button>
-              <p class="form-success" role="status" data-fs-success>Thank you — we'll be in touch shortly.</p>
-              <div data-fs-error></div>
+              <div class="form-success" role="status" data-fs-success>Thank you — we'll be in touch shortly.</div>
+              <div class="form-error" role="alert" data-fs-error></div>
             </div>
 
           </div>
@@ -208,10 +214,14 @@
 
 <script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
 
-<!-- Formspree AJAX library -->
-<script src="https://unpkg.com/@formspree/ajax@1/dist/formspree.ajax.min.js"></script>
+<!-- Formspree AJAX library (enhancement — native form submission is the fallback) -->
+<script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
+    if (typeof FormspreeAjax === 'undefined') {
+      console.warn('Formspree AJAX not loaded — form will submit natively.');
+      return;
+    }
     FormspreeAjax.initForm({
       formElement: '#enquiry-form',
       formId: 'xdeegjjk'
