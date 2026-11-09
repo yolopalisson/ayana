@@ -1303,3 +1303,47 @@ section[id],div[id]{scroll-margin-top:110px}
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+
+/* =========================================================================
+   CUSTOM FILE INPUT
+   ========================================================================= */
+.form-help-text {
+  margin: 0.4rem 0 0;
+  font-size: 0.85rem;
+  color: var(--muted, #5b5b5b);
+}
+
+input[type="file"] {
+  display: block;
+  width: 100%;
+  padding: 0.65rem 1rem;
+  font-size: 0.95rem;
+  color: var(--navy);
+  background: #fff;
+  border: 1px solid #d8d8d8; /* Match your existing input borders */
+  border-radius: 6px;
+  transition: border-color 0.2s ease;
+}
+
+input[type="file"]::file-selector-button {
+  padding: 0.55rem 1rem;
+  margin-right: 1rem;
+  border: none;
+  border-radius: 4px;
+  background: var(--navy, #0F2E4E);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background: var(--gold, #C6A15B);
+}
+
+/* Error state for file input */
+.form-field.has-error input[type="file"] {
+  border-color: #B3261E;
+  box-shadow: 0 0 0 1px #B3261E;
+}
