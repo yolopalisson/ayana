@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Block search engines from indexing form submission confirmation pages
+Disallow: /thank-you.html
+Disallow: /thank-you-join.html
+
+# Sitemap location
+Sitemap: https://ayanalearning.com/sitemap.xml
