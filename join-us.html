@@ -35,7 +35,7 @@
       <ul class="nav-list">
         <li class="nav-item"><a class="nav-link" href="index.html" aria-current="page">Home</a></li>
         
-        <li class="nav-item"><a class="nav-link" href="organisations.html">Adults &amp; Organisations</a></li>
+        <li class="nav-item"><a class="nav-link" href="organisations.html">For Organisations</a></li>
         
         <li class="nav-item has-drop">
           <button class="nav-link" aria-expanded="false" aria-haspopup="true">
@@ -89,6 +89,7 @@
         id="join-form"
         action="https://formspree.io/f/mqppqjjp"
         method="POST"
+        enctype="multipart/form-data"
         novalidate
       >
         <!-- Used only if JavaScript fails: Formspree redirects here natively -->
@@ -167,10 +168,19 @@
             </select>
           </div>
 
-          <!-- <div class="form-field form-field--full">
-            <label for="message">Tell us about yourself</label>
-            <textarea id="message" name="message"></textarea>
-          </div> -->
+          <!-- NEW: File Upload Field -->
+          <div class="form-field form-field--full">
+            <label for="attachment">Upload your CV, portfolio, or a video introduction (Optional)</label>
+            <input 
+              type="file" 
+              id="attachment" 
+              name="attachment" 
+              aria-describedby="attachment-help"
+            >
+            <p class="form-help-text" id="attachment-help">
+              Accepted formats: PDF, DOC, DOCX, MP4, MOV, AVI, WEBM. Maximum file size: 25MB.
+            </p>
+          </div>
 
           <div class="form-field form-field--full form-submit--center">
             <center>
@@ -218,16 +228,12 @@
         <h4>Trust</h4>
         <ul>
           <li><a href="safeguarding.html">Safeguarding and Data</a></li>
-          <!-- <li><a href="safeguarding.html#policy">Safeguarding policy</a></li> -->
-          <!-- <li><a href="privacy.html">Privacy</a></li> -->
-          <!-- <li><a href="terms.html">Terms</a></li> -->
           <li><a href="enquire.html">Contact</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
       <span>© <span id="yr">2026</span> Ayana Learning Collective. All rights reserved.</span>
-      <!-- <span>Developed with <a href="https://palisson-tech.co.za" target="_blank" rel="noopener noreferrer" style="color: #fff; text-decoration: underline;">Palisson Tech &amp; Media</a></span> -->
     </div>
   </div>
 </footer>
@@ -249,6 +255,7 @@
   var summaryList = document.getElementById('join-error-list');
   var formError   = document.getElementById('join-error');
   var submitBtn   = form.querySelector('button[type="submit"]');
+  var fileInput   = document.getElementById('attachment');
 
   var fields = [
     { el: document.getElementById('name'),     label: 'Name' },
@@ -342,6 +349,7 @@
 
     var errors = [];
 
+    // Standard field validation
     fields.forEach(function (item) {
       if (!item.el) return;
       clearFieldError(item.el);
@@ -351,6 +359,18 @@
         errors.push({ el: item.el, label: item.label, message: message });
       }
     });
+
+    // File size validation (Formspree limit)
+    if (fileInput && fileInput.files.length > 0) {
+      var fileSize = fileInput.files[0].size;
+      var maxSize = 25 * 1024 * 1024; // 25MB in bytes
+      
+      if (fileSize > maxSize) {
+        var msg = 'The selected file is too large. Please upload a file smaller than 25MB.';
+        showFieldError(fileInput, msg);
+        errors.push({ el: fileInput, label: 'File Upload', message: msg });
+      }
+    }
 
     if (errors.length) {
       buildSummary(errors);
