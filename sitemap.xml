@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <url>
+       <loc>https://ayanalearning.com/</loc>
+       <lastmod>2026-11-09T17:42:45+00:00</lastmod>
+       <priority>1.0000</priority>
+  </url>
+  <url>
+       <loc>https://ayanalearning.com/index.html</loc>
+       <lastmod>2026-11-09T17:42:45+00:00</lastmod>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://ayanalearning.com/organisations.html</loc>
+       <lastmod>2026-11-09T17:39:28+00:00</lastmod>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://ayanalearning.com/live-classes.html</loc>
+       <lastmod>2026-11-09T17:39:25+00:00</lastmod>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://ayanalearning.com/pathways.html</loc>
+       <lastmod>2026-11-09T17:39:30+00:00</lastmod>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://ayanalearning.com/about.html</loc>
+       <lastmod>2026-11-09T17:39:16+00:00</lastmod>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://ayanalearning.com/safeguarding.html</loc>
+       <lastmod>2026-11-09T17:39:31+00:00</lastmod>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://ayanalearning.com/enquire.html</loc>
+       <lastmod>2026-11-09T17:39:19+00:00</lastmod>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://ayanalearning.com/join-us.html</loc>
+       <lastmod>2026-11-09T17:39:24+00:00</lastmod>
+       <priority>0.8000</priority>
+  </url>
+</urlset>
