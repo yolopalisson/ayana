@@ -1,4 +1,7 @@
-User-agent: *
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: OAI-AdsBot
 Allow: /
 
 # Block search engines from indexing form submission confirmation pages
